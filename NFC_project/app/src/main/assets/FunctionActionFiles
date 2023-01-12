@@ -1,0 +1,14 @@
+绑定功能--可以以下代码来启动响应的设置页面
+startActivity(new Intent("android.settings.panel.action.WIFI"));
+
+action列表
+"android.settings.panel.action.WIFI"    弹窗提示打开/关闭wifi
+"android.settings.panel.action.INTERNET_CONNECTIVITY"   弹窗提示是否打开wifi或数据
+"android.settings.panel.action.NFC"     弹窗提示打开/关闭NFC
+"android.settings.panel.action.VOLUME"  弹窗显示音量的设置
+
+"android.net.wifi.PICK_WIFI_NETWORK"    跳转至WiFi设置页面
+"android.settings.DEVICE_NAME"          跳转设置设备名（关于手机页面）
+"android.settings.TETHER_SETTINGS"      跳转至个人热点设置页面
+"android.settings.SETTINGS"             跳转至设置主界面
+"android.settings.LOCATION_SOURCE_SETTINGS"             跳转至位置设置界面
