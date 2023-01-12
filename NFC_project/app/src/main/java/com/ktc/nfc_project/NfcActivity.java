@@ -40,9 +40,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 
-/**
- * @author As11177
- */
+
 public class NfcActivity extends AppCompatActivity {
 
 

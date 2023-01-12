@@ -38,9 +38,6 @@ import java.util.HashMap;
 import java.util.List;
 
 
-/**
- * @author As11177
- */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
