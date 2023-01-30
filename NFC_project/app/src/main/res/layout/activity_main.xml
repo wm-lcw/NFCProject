@@ -13,7 +13,8 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        tools:ignore="MissingConstraints">
+        tools:ignore="MissingConstraints"
+        android:visibility="gone">
 
         <Button
             android:id="@+id/btn_clean"
@@ -88,6 +89,20 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:text="没有配对记录，请刷卡绑定app！"
+            android:layout_marginTop="30dp"
+            android:gravity="center"/>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/ll_openNFC"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        android:visibility="gone">
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="NFC未打开，点击跳转至NFC设置界面"
             android:layout_marginTop="30dp"
             android:gravity="center"/>
     </LinearLayout>

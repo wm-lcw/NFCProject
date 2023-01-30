@@ -41,6 +41,9 @@ import java.util.List;
 
 
 
+/**
+ * @author wm
+ */
 public class NfcActivity extends AppCompatActivity {
 
 
@@ -137,6 +140,8 @@ public class NfcActivity extends AppCompatActivity {
                 Log.d(TAG, "initData: no record, write new NFC ID");
                 showNFCDialog();
             }
+        } else {
+            Log.d(TAG, "initData: NFC status is close!!!");
         }
     }
 

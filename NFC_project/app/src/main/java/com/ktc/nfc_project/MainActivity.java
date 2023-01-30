@@ -7,10 +7,12 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.graphics.drawable.ColorDrawable;
+import android.nfc.NfcAdapter;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
@@ -38,12 +40,15 @@ import java.util.HashMap;
 import java.util.List;
 
 
+/**
+ * @author wm
+ */
 public class MainActivity extends AppCompatActivity {
 
     private static final String TAG = "MainActivity";
     private Context mContext;
     private ListView mBindList;
-    private LinearLayout mllBindList, mllTips;
+    private LinearLayout mllBindList, mllTips, mllOpenNfc;
     private BindListAdapter mBindAdapter;
     private MyDBOpenHelper myDBHelper;
     private SQLiteDatabase db;
@@ -52,6 +57,7 @@ public class MainActivity extends AppCompatActivity {
     private final List<AppInfo> mBindInfoList = new ArrayList<>();
     private final static int HANDLER_MESSAGE_SHOW_TIPS = 0;
     private final static int HANDLER_MESSAGE_SHOW_BIND_LIST = 1;
+    private final static int HANDLER_MESSAGE_OPEN_NFC = 2;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,9 +65,22 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         mContext = this;
         Log.d(TAG, "onCreate: new activity");
+        initData();
+
+    }
+
+    private void initData() {
         mBindList = findViewById(R.id.bind_List);
         mllBindList = findViewById(R.id.ll_bind_list);
         mllTips = findViewById(R.id.ll_tips);
+        mllOpenNfc = findViewById(R.id.ll_openNFC);
+        mllOpenNfc.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Log.d(TAG, "onClick: jump to open NFC");
+                startActivity(new Intent("android.settings.panel.action.NFC"));
+            }
+        });
         myDBHelper = new MyDBOpenHelper(mContext, "my.db", null, 1);
         mContext = this;
         //清空所有已配对信息
@@ -77,8 +96,20 @@ public class MainActivity extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        //在页面重构时刷新列表
-        initBindList();
+        NfcAdapter adapter = NfcAdapter.getDefaultAdapter(this);
+        if (null == adapter) {
+            Log.d(TAG, "onResume: 不支持NFC功能");
+            Toast.makeText(mContext, "该设备不支持NFC功能！", Toast.LENGTH_SHORT).show();
+            finish();
+        } else if (adapter.isEnabled()) {
+            Log.d(TAG, "onResume: NFC enable");
+            //在页面重构时刷新列表,且在NFC开启的状态下才可用
+            initBindList();
+        } else {
+            Log.d(TAG, "onResume:NFC disable");
+            handler.sendEmptyMessage(HANDLER_MESSAGE_OPEN_NFC);
+        }
+
     }
 
     /**
@@ -313,10 +344,15 @@ public class MainActivity extends AppCompatActivity {
             if (msg.what == HANDLER_MESSAGE_SHOW_TIPS) {
                 mllTips.setVisibility(View.VISIBLE);
                 mllBindList.setVisibility(View.GONE);
-
+                mllOpenNfc.setVisibility(View.GONE);
             } else if (msg.what == HANDLER_MESSAGE_SHOW_BIND_LIST) {
                 mllTips.setVisibility(View.GONE);
                 mllBindList.setVisibility(View.VISIBLE);
+                mllOpenNfc.setVisibility(View.GONE);
+            } else if (msg.what == HANDLER_MESSAGE_OPEN_NFC) {
+                mllTips.setVisibility(View.GONE);
+                mllBindList.setVisibility(View.GONE);
+                mllOpenNfc.setVisibility(View.VISIBLE);
             }
         }
     };
